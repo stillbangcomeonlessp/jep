@@ -9,7 +9,7 @@ class Moderator {
 
     public void newGame(){
 	Scanner scanner = new Scanner(System.in);
-	Rooms grand;
+	Rooms house;
 	Seeker gamer = new Seeker();
 	RunAway raway = new RunAway();
 
@@ -17,18 +17,27 @@ class Moderator {
 	gamer.name = scanner.next();
 	System.out.print("Hi, "+gamer.name+". I hid my glasses in a room somewhere with \"RunAway!\"\n You can \'Find the Glasses!.\' What you want level? : ");
 	this.level = scanner.nextInt();
-	grand = new Rooms(setLevel(this.level));
+	house = new Rooms(setLevel(this.level));
 	System.out.println("Level "+this.level+" has been set! Go to there~\n");
-		
-	grand.printRooms();
-	question(gamer,setLevel(this.level));
+
+	mainGame(gamer,raway,house);
 
 	scanner.close();
+    }
+
+    public void mainGame(Seeker gamer, RunAway raway,Rooms house){
+	gamer.setRoom(this.level);
+	raway.setRoom(this.level);
+
+	house.cmpRoom(gamer,raway);
+
+	house.printRooms();
     }
     
     public int setLevel(int n){
 	return (n<<1)+1;
     }
+    
 
     public void question(Seeker refGamer,int n){
 	Scanner scanner = new Scanner(System.in);
@@ -58,7 +67,7 @@ class Moderator {
 		break;
 	    case 3:
 		charOp[j] = '*';
-		result *= operand[j+1];
+		result = (int)(result*operand[j+1]);
 		break;
 	    case 4:
 		charOp[j] = '/';
@@ -81,12 +90,26 @@ class Moderator {
 
 class Seeker {
     String name;
+    int level;
     int roomNum;
     int answer;
+
+    public void setRoom(int n){
+        this.level = n;
+	n = (n<<1)+1;
+	this.roomNum = (int)(Math.random()*n+1);
+    }
 }
 
 class RunAway {
+    int level;
+    int roomNum;
 
+    public void setRoom(int n){
+	this.level = n;
+	n = (n<<1)+1;
+	this.roomNum = (int)(Math.random()*n+1);
+    }
 }
 
 class Rooms {
@@ -104,6 +127,15 @@ class Rooms {
 	this.level = (n>>1)+1;
     }
 
+    public void cmpRoom(Seeker gamer, RunAway raway){
+	while(gamer.roomNum != raway.roomNum){
+	    gamer.setRoom(gamer.level);
+	    raway.setRoom(raway.level);
+	}
+	System.out.println("Generated!");
+	return;
+    }
+
     public void printRooms(){
 	for(int i=0;i<room[0].length;i++){
 	    for(int j=0;j<room[0].length;j++){
@@ -111,7 +143,10 @@ class Rooms {
 	    }
 	    System.out.println("");
 	    for (int j=0; j<room[0].length; j++) {
-		System.out.printf("l%4d l", room[i][j]);
+		if (room[i][j] == 42) {
+		    System.out.printf("l%4d l",room[i][j]);
+		}else
+		    System.out.printf("l%4d l", room[i][j]);
 	    }
 	    System.out.println("");
 	    for(int j=0;j<room[0].length;j++){

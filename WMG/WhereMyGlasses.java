@@ -32,6 +32,9 @@ class Moderator {
 	house.cmpRoom(gamer,raway);
 
 	house.printRooms();
+	while(true){
+	    question(gamer,this.level);
+	}
     }
     
     public int setLevel(int n){
@@ -39,53 +42,7 @@ class Moderator {
     }
     
 
-    public void question(Seeker refGamer,int n){
-	Scanner scanner = new Scanner(System.in);
-	n = (int)(Math.random()*n+2);
-	int[] operator = new int[n];
-	char[] charOp = new char[n];
-	int[] operand = new int[n];
-
-	int result;
-
-	for (int i = 0; i<operand.length; i++) {
-	    operand[i] = (int)(Math.random()*n+1);
-	}
-	result = operand[0];
-	
-	for (int j = 0; j<operator.length-1; j++) {
-	   
-	    operator[j] = (int)(Math.random()*4+1);
-	    switch(operator[j]){
-	    case 1:
-		charOp[j] = '+';
-		result += operand[j+1];
-		break;
-	    case 2: 
-		charOp[j] = '-';
-		result -= operand[j+1];
-		break;
-	    case 3:
-		charOp[j] = '*';
-		result = (int)(result*operand[j+1]);
-		break;
-	    case 4:
-		charOp[j] = '/';
-		result = (int)(result/operand[j+1]);
-		break;
-	    }
-	}
-	for (int k=0; k<operand.length; k++) {
-	    if(k==operand.length-1){
-		System.out.print(operand[k]+" = ?: ");
-		if(result == (refGamer.answer = scanner.nextInt()))
-		    System.out.println("Success!");
-		else
-		    System.out.println("Failed");
-	    }else
-		System.out.print(operand[k]+" "+charOp[k]+" ");
-	}
-    }
+    public void question(Seeker refGamer,int n)
 }
 
 class Seeker {
@@ -96,8 +53,8 @@ class Seeker {
 
     public void setRoom(int n){
         this.level = n;
-	n = (n<<1)+1;
-	this.roomNum = (int)(Math.random()*n+1);
+	n = (int)Math.pow(((n<<1)+1),2);
+	this.roomNum = (int)(Math.random()*n)+1;
     }
 }
 
@@ -128,10 +85,22 @@ class Rooms {
     }
 
     public void cmpRoom(Seeker gamer, RunAway raway){
-	while(gamer.roomNum != raway.roomNum){
+	int temp;
+
+	while(gamer.roomNum == raway.roomNum){
 	    gamer.setRoom(gamer.level);
-	    raway.setRoom(raway.level);
 	}
+	
+	for (int i=0; i<room[0].length; i++) {
+	    for (int j=0; j<room[i].length; j++) {
+		if(gamer.roomNum == room[i][j]){
+		    temp = gamer.roomNum;
+		    room[i][j] = 42;
+		    break;
+		}
+	    }
+	}
+	
 	System.out.println("Generated!");
 	return;
     }
@@ -144,7 +113,7 @@ class Rooms {
 	    System.out.println("");
 	    for (int j=0; j<room[0].length; j++) {
 		if (room[i][j] == 42) {
-		    System.out.printf("l%4d l",room[i][j]);
+		    System.out.printf("l%4c l",room[i][j]);
 		}else
 		    System.out.printf("l%4d l", room[i][j]);
 	    }
@@ -154,6 +123,7 @@ class Rooms {
 	    }
 	    System.out.print("\n");
 	}
+	System.out.println("Check where you at! ");
     }
 }
 

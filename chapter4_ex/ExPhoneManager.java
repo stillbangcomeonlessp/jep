@@ -42,9 +42,9 @@ public class ExPhoneManager {
 	while(true){
 	    System.out.print("검색할 이름>>");
 	    search = scanner.next();
-	    if (search.equals("kim")) {
+	    if (search.equals("김인수")) {
 		System.out.println(search+"의 번호는 "+kim.getTel());
-	    }else if (search.equals("joe")) {
+	    }else if (search.equals("조수미")) {
 		System.out.println(search+"의 번호는 "+joe.getTel());
 	    }else if (search.equals("exit")) {
 		System.out.println("프로그램을 종료합니다.");

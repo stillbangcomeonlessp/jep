@@ -20,7 +20,7 @@ public class ExRect {
 	height = scanner.nextInt();
 	Rect rectA = new Rect(width,height);
 
-	System.out.print("1 너비와 높이 >>");
+	System.out.print("2 너비와 높이 >>");
 	width = scanner.nextInt();
 	height = scanner.nextInt();
 	Rect rectB = new Rect(width,height);

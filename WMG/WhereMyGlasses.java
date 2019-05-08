@@ -32,9 +32,9 @@ class Moderator {
 	house.cmpRoom(gamer,raway);
 
 	house.printRooms();
-	while(true){
-	    question(gamer,this.level);
-	}
+       
+	stackCal(gamer,this.level);
+	move(gamer,house);
     }
     
     public int setLevel(int n){
@@ -42,13 +42,116 @@ class Moderator {
     }
     
 
-    public void question(Seeker refGamer,int n)
+    public void stackCal(Seeker gamer,int n){
+	Scanner scanner = new Scanner(System.in);
+	int[] stackBox = new int[setLevel(n)];
+	int result;
+
+	n = (int)(Math.pow(setLevel(n),2));
+	
+	System.out.println("\n+---+");
+	for(int i=stackBox.length-1; i>=0; i--) {
+	    if(oddp(i)){
+		stackBox[i] = (int)(Math.random()*4)+1;
+		stackBox[i] = operatorInsert(stackBox[i]);
+		System.out.printf("l%2c l",stackBox[i]);
+		System.out.println("");
+		System.out.println("+---+");
+	    }else {
+		stackBox[i] = (int)(Math.random()*n)+1;
+		System.out.printf("l%2d l",stackBox[i]);
+		System.out.println("");
+		System.out.println("+---+");
+	    }
+	}
+	result = calStack(stackBox);
+
+	System.out.print("\nInput!: ");
+	if (result == (gamer.answer = scanner.nextInt())) {
+	    System.out.println("Success!");
+	}else{
+	    System.out.println("Failed!");
+	}
+    }
+
+    public boolean oddp(int val){
+	if (val%2 != 0) {
+	    return true;
+	}else{
+	    return false;
+	}
+    }
+
+    public int operatorInsert (int val) {
+	switch(val){
+	case 1:
+	    return 43;
+	case 2:
+	    return 45;
+	case 3:
+	    return 42;
+	default:
+	    return 47;
+	}
+    }
+    public int calStack(int[] stackBox) {
+	int result = stackBox[stackBox.length-1];
+
+	for (int i=stackBox.length-2;i>=1; i=i-2) {
+	    switch(stackBox[i]){
+	    case 43:
+		result += stackBox[i-1];
+		break;
+	    case 45:
+		result -= stackBox[i-1];
+		break;
+	    case 42:
+		result *= stackBox[i-1];
+		break;
+	    case 47:
+		result /= stackBox[i-1];
+		break;
+	    default:
+		System.out.println("NO ACTION");
+	    }
+	}
+	return result;
+    }
+
+    public void move (Seeker gamer,Rooms house) {
+	int x=gamer.roomIndex[0],y=gamer.roomIndex[1];
+	int[][] sel = new int[2][2];
+	int[] ud = new int[2];
+	int[] lr = new int[2];
+	int seq = 1;
+	ud[0] = x-1;
+	ud[1] = x+1;
+	lr[0] = y-1;
+	lr[1] = y+1;
+
+	for (int i = 0; i<ud.length; i++) {
+	    if (ud[i]<0||ud[i]>=house.room[0].length) {
+		continue;
+	    }
+	    sel[i][]
+	    System.out.println(seq++ +") "+house.room[ud[i]][y]);
+	}
+
+	for (int j = 0; j<lr.length; j++) {
+	    if (lr[j]<0||lr[j]>=house.room[0].length) {
+		continue;
+	    }
+	    System.out.println(seq+++") "+house.room[x][lr[j]]);
+	}
+    }
 }
+
 
 class Seeker {
     String name;
     int level;
     int roomNum;
+    int[] roomIndex = new int[2];
     int answer;
 
     public void setRoom(int n){
@@ -94,8 +197,9 @@ class Rooms {
 	for (int i=0; i<room[0].length; i++) {
 	    for (int j=0; j<room[i].length; j++) {
 		if(gamer.roomNum == room[i][j]){
-		    temp = gamer.roomNum;
-		    room[i][j] = 42;
+		    gamer.roomIndex[0] = i;
+		    gamer.roomIndex[1] = j;
+		    room[i][j] = 42-84;
 		    break;
 		}
 	    }
@@ -112,8 +216,8 @@ class Rooms {
 	    }
 	    System.out.println("");
 	    for (int j=0; j<room[0].length; j++) {
-		if (room[i][j] == 42) {
-		    System.out.printf("l%4c l",room[i][j]);
+		if (room[i][j] == -42) {
+		    System.out.printf("l%4c l",room[i][j]+84);
 		}else
 		    System.out.printf("l%4d l", room[i][j]);
 	    }
@@ -123,7 +227,7 @@ class Rooms {
 	    }
 	    System.out.print("\n");
 	}
-	System.out.println("Check where you at! ");
+	System.out.println("Check where you at! You are in '*'");
     }
 }
 

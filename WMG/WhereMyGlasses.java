@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 class Moderator {
     int level;
+    int roomTemp;
     
     public Moderator(){
 	level = 0;
@@ -32,9 +33,12 @@ class Moderator {
 	house.cmpRoom(gamer,raway);
 
 	house.printRooms();
-       
+	
 	stackCal(gamer,this.level);
-	move(gamer,house);
+	
+	if (gamer.permed) {
+	    move(gamer,house);
+	}
     }
     
     public int setLevel(int n){
@@ -69,9 +73,13 @@ class Moderator {
 	System.out.print("\nInput!: ");
 	if (result == (gamer.answer = scanner.nextInt())) {
 	    System.out.println("Success!");
+	    gamer.permed = true;
 	}else{
 	    System.out.println("Failed!");
+	    gamer.permed = false;
 	}
+
+	gamer.permed = true;
     }
 
     public boolean oddp(int val){
@@ -119,29 +127,21 @@ class Moderator {
     }
 
     public void move (Seeker gamer,Rooms house) {
+	Scanner scanner  = new Scanner(System.in);
 	int x=gamer.roomIndex[0],y=gamer.roomIndex[1];
-	int[][] sel = new int[2][2];
-	int[] ud = new int[2];
-	int[] lr = new int[2];
+	int[] pos = new int[2][4];
 	int seq = 1;
-	ud[0] = x-1;
-	ud[1] = x+1;
-	lr[0] = y-1;
-	lr[1] = y+1;
+	
+	pos[0][0] = x-1;
+	pos[0][1] = x+1;
+	pos[0][2] = y-1;
+	pos[0][3] = y+1;
 
-	for (int i = 0; i<ud.length; i++) {
-	    if (ud[i]<0||ud[i]>=house.room[0].length) {
+	for (int i=0; i<pos[0].length; i++) {
+	    if (pos[0][i]<0 || pos[0][i]>=house.level) {
 		continue;
 	    }
-	    sel[i][]
-	    System.out.println(seq++ +") "+house.room[ud[i]][y]);
-	}
-
-	for (int j = 0; j<lr.length; j++) {
-	    if (lr[j]<0||lr[j]>=house.room[0].length) {
-		continue;
-	    }
-	    System.out.println(seq+++") "+house.room[x][lr[j]]);
+	    System.out.println(seq+") "+ house.room[]);
 	}
     }
 }
@@ -153,6 +153,8 @@ class Seeker {
     int roomNum;
     int[] roomIndex = new int[2];
     int answer;
+
+    boolean permed;
 
     public void setRoom(int n){
         this.level = n;
@@ -172,7 +174,7 @@ class RunAway {
     }
 }
 
-class Rooms {
+class Rooms{
     int level;
     int[][] room;
     public Rooms(int n){
@@ -184,27 +186,25 @@ class Rooms {
 	 	room[i][j] = temp++;
 	    }
 	}
-	this.level = (n>>1)+1;
+	this.level = n;
     }
 
     public void cmpRoom(Seeker gamer, RunAway raway){
-	int temp;
-
 	while(gamer.roomNum == raway.roomNum){
 	    gamer.setRoom(gamer.level);
 	}
-	
-	for (int i=0; i<room[0].length; i++) {
-	    for (int j=0; j<room[i].length; j++) {
-		if(gamer.roomNum == room[i][j]){
-		    gamer.roomIndex[0] = i;
-		    gamer.roomIndex[1] = j;
-		    room[i][j] = 42-84;
-		    break;
-		}
-	    }
+
+	if ((gamer.roomNum%this.level)==0) {
+	    gamer.roomIndex[0] = gamer.roomNum/this.level-1;
+	    gamer.roomIndex[1] = this.level-1;
+	}else {
+	    gamer.roomIndex[0] = gamer.roomNum/this.level;
+	    gamer.roomIndex[1] = gamer.roomNum%this.level-1;
 	}
 	
+
+
+	this.room[gamer.roomIndex[0]][gamer.roomIndex[1]] = 42-84;
 	System.out.println("Generated!");
 	return;
     }
